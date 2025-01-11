@@ -12,6 +12,7 @@ To-do:
 
 import requests
 
+class PyCT:
     """
     @class PyCT
     @brief A class to interact with the CoinGecko API to fetch cryptocurrency data.
