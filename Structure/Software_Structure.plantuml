@@ -9,14 +9,12 @@ state "<b>PyCryptoGUI</b>\n<i>Crypto GUI</i>" as PyCryptoGUI
 
 state PyCryptoGUI {
     state "<b>PycryptoTracker\n<i>Tracks Crypto" as PyCryptoTracker
-    state "<b>PyCryptoManager\n<i>PyCryptoManager Metrics" as PyCryptoManager
+    state "<b>PyDatabase\n<i>PyDatabase Metrics" as PyDatabase
     state "<b>PyPlot\n<i>Plots Graphs" as PyPlot
 
     PyCryptoTracker --> PyPlot : Plots Crypto Information
-    PyCryptoTracker --> PyCryptoManager : Crypto Metrics
+    PyCryptoTracker --> PyDatabase : Crypto Metrics
 
 }
-
-
 
 @enduml

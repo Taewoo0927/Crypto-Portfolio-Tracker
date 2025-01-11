@@ -1,0 +1,8 @@
+1. PyCryptoTracker
+-> grabbing data
+-> Instantenous Purchase
+
+
+2. PyDatabase
+-> Input the data I should store the data
+-> Output current database the data
