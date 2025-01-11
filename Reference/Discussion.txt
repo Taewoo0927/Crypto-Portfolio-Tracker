@@ -18,6 +18,10 @@ Reference Code Syntax:
         Syntax -    [include _ infront]
         EXAMPLES -  [self._global_storage, self._apikey]
 
+    CLASS:
+        Syntax -    [Put Py infront]
+        EXAMPLES -  [Pyclass,  PyCT]
+
     FUNCTIONS:
-        Syntax - [all lower case]
-        EXAMPLES - [def generic_function_name, def get_Server_Status]
+        Syntax -    [all lower case, prefix is class name]
+        EXAMPLES -  [Pyclass_generic_function_name, CT_Query_Server_Status]
