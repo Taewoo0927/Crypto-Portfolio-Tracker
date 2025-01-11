@@ -1,0 +1,22 @@
+@startuml Code-structure
+
+hide empty description
+
+[*] --> PyCryptoGUI : User Input
+
+state "<b>PyCryptoGUI</b>\n<i>Crypto GUI</i>" as PyCryptoGUI
+
+
+state PyCryptoGUI {
+    state "<b>PycryptoTracker\n<i>Tracks Crypto" as PyCryptoTracker
+    state "<b>PyPlot\n<i>Plots Graphs" as PyPlot
+    state "<b>PyPortfolio\n<i>Portfolio Metrics" as PyPortfolio
+
+    PyCryptoTracker --> PyPlot : Plots Crypto Information
+    PyCryptoTracker --> PyPortfolio : Crypto Metrics
+
+}
+
+
+
+@enduml

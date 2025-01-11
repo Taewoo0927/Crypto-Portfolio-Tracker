@@ -1,0 +1,8 @@
+a.)  The user should be able to create and title a portfolio - GUI
+
+b.)  The user should be able to search from a list of coins. Need to be able to add to the wishlist (Portfolio)
+
+C.)  Purchase
+    a.) They can “quick buy” from their watchlist by selecting the crypto and specifying the amount. 
+    b.) They can access the purchase menu and enter the name of the Crypto, the purchase amount, and the date to be purchased.
+
