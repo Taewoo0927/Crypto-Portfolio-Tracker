@@ -6,3 +6,18 @@
 2. PyDatabase
 -> Input the data I should store the data
 -> Output current database the data
+
+
+Reference Code Syntax:
+
+    VARIABLES: 
+        Syntax -    [all lower case]
+        EXAMPLES -  [var1, api_key]
+
+    GLOBAL VARIABLES: 
+        Syntax -    [include _ infront]
+        EXAMPLES -  [self._global_storage, self._apikey]
+
+    FUNCTIONS:
+        Syntax - [all lower case]
+        EXAMPLES - [def generic_function_name, def get_Server_Status]
