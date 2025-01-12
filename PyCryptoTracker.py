@@ -37,10 +37,46 @@ class PyCT:
                 "x-cg-demo-api-key": self._api_key
             }
 
+    def search_coin(self, coin_name):
+        """
+        @brief Search for a specific cryptocurrency by name.
+
+        This function sends a GET request to the CoinGecko API to search for a specific cryptocurrency 
+        by name. It returns a dictionary containing information about the coin if found.
+
+        @param coin_name The name of the cryptocurrency to search for.
+        @return A dictionary containing information about the coin if found, or None if not found.
+        """
+        url = "https://api.coingecko.com/api/v3/search"
+
+        headers = {"accept": "application/json"}
+
+        params = {"query": coin_name}
+
+        response = requests.get(url, headers=headers, params=params)
+
+        data = response.json()
+
+        # Extract specific data about the coin
+        coins = data.get('coins', [])
+        if coins:
+            coin = coins[0]  # Get the first coin in the list
+
+            labels = ["Coin Name", "Symbol", "Market Cap Rank", "Thumb", "Large"]
+            keys = ["name", "symbol", "market_cap_rank", "thumb", "large"]
+
+            alists = coin.get(keys)
+
+            sendData = dict(zip(labels, alists))
+            print(sendData)
+        
+            return sendData
+        else:
+            return response.status_code
+
+
     def get_crypto_data(self, coins, currency="usd", include_market_data=False):
         
-
-
         # Prepare query parameters dynamically based on the function inputs
         params = {
             "ids": ",".join(coins),          # List of coins as a comma-separated string
@@ -67,23 +103,38 @@ class PyCT:
 
 
 # Example usage:
-def test_function():
-    # Initialize the class with your API key
-    api_key = "CG-aTnmuupTErMjud8p9vbPqVYS"
-    crypto_fetcher = PyCT(api_key)
+def test_function(coin_name):
+    url = "https://api.coingecko.com/api/v3/search"
 
-    # Call the method to get data for multiple coins
-    coins = ["bitcoin", "ethereum", "cardano"]
-    data = crypto_fetcher.TC_get_crypto_data(coins, currency="usd", include_market_data=True)
+    headers = {"accept": "application/json"}
 
-    # Print the data for each coin
-    if data:
-        for coin_data in data:
-            print(f"{coin_data['name']} ({coin_data['symbol'].upper()}):")
-            print(f"  Price: ${coin_data['current_price']}")
-            print(f"  Market Cap: ${coin_data['market_cap']}")
-            print(f"  24h Volume: ${coin_data['total_volume']}\n")
+    params = {"query": coin_name}
 
+    response = requests.get(url, headers=headers, params=params)
+
+    data = response.json()
+
+    # Extract specific data about the coin
+    coins = data.get('coins', [])
+    if coins:
+        # Needed Data
+        labels = ["Coin Name", "Symbol", "Market Cap Rank", "Thumb", "Large"] # Key names for packagedData
+        keys = ["name", "symbol", "market_cap_rank", "thumb", "large"] # for collection of api data
+        coin = coins[0]  # Get the first coin in the list
+
+
+
+        # Collect all values for the specified keys
+        infoList = [coin.get(key) for key in keys]
+
+        # Create the dictionary
+        packagedData = dict(zip(labels, infoList))
+        print(packagedData)
+
+        return packagedData
+
+    else:
+        return response.status_code
 
 
 # Run this file directly to test the api key and CoinGecko server status without the class: {'gecko_says': '(V3) To the Moon!'}
@@ -104,7 +155,7 @@ if __name__ == "__main__":
         print(f"Error: {response.status_code}, {response.text}")
 
 
-    test_function()
+    test_function("bitcoin")
 
 
 
