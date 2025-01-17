@@ -2,13 +2,20 @@ class DataPlotter:
     """
     @brief A class for creating and managing plots using Matplotlib's PyPlot.
 
-    This class provides methods to create different types of plots, customize them, and display the results. 
-    It simplifies repetitive tasks associated with plotting.
+    @Params
+    attributes - this is signified, 
 
-    @details
-    The class supports line plots, scatter plots, and bar charts. Additional customization options such as 
-    titles, axis labels, and grid lines are available. It is intended for use in data visualization tasks.
+    @Functions:
 
+    Change parameters,
+    Print out list
+
+    @ Questions or observations:
+
+    The data required by the GUI will be returned, no GUI will be implemented in this class
+    Input will not interact with GUI either, it expects DICTIONARY.      
+    TBH, is class even needed for such a task?
+    
     Example usage:
     @code
         plotter = DataPlotter()
@@ -17,7 +24,7 @@ class DataPlotter:
 
     @note This class requires Matplotlib to be installed.
     """
-    def __init__(self):
+    def __init__(self, attributes):
         self.potato = 1
 
 if __name__ == "__main__":
