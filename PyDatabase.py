@@ -35,7 +35,7 @@ class Pydb:
     def _query_data_table(self, table_name, name, attribute):
         self._check_table(table_name)
         table = self._db.table(table_name)
-        return table.search(self._user[name] == attribute)
+        return table.search(self._user.name == attribute)
 
     def _check_table(self, table_name):
         if table_name not in self._get_table_list():
@@ -51,4 +51,4 @@ if __name__ == "__main__":
     #Database._insert_data("Test1", Data)
     #print(Database._extract_row("Test1"))
     #Database._delete_table("Test1")
-    print(Database._query_data_table('Test1', '2', '##'))
+    print(Database._query_data_table('Test1', 'name', 'BTC'))
