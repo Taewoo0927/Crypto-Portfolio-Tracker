@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 from datetime import datetime
+import dearpygui.dearpygui as dpg
 # DataPlotter.py
 # This class is a widget in which, users can add graphs, sorted by an attribute, as well as 
 # perform operations between different graphs. 
@@ -49,50 +50,38 @@ class DataPlotter:
                 return
 
         print(f"Dataset '{nameOfCoin}' not found.")
+        
     '''
     @brief Plots data from pyPlotDatabase for a specific attribute.
     @params attribute: The key of the data to plot (e.g., "prices").
     '''
     def DataPlotter_plot_by_attribute(self, attribute):
         """
-        Plots data for a specific attribute from all datasets in pyPlotDatabase on the same graph.
+        Creates a Dear PyGui plot for a specific attribute from all datasets.
         """
         if not self.pyPlotDatabase:
             print("No data to plot.")
             return
 
-        data_found = False
-        plt.figure(figsize=(10, 6))  # Create a single figure for overlayed plots
+        # Create a Dear PyGui window and plot
+        with dpg.window(label="Data Plot", width=800, height=600):
+            with dpg.plot(label=f"{attribute.capitalize()} Over Time", height=400, width=700):
+                dpg.add_plot_legend()
+                dpg.add_plot_axis(dpg.mvXAxis, label="Timestamp")
+                y_axis = dpg.add_plot_axis(dpg.mvYAxis, label="Value")
 
-        for name, data in self.pyPlotDatabase:
-            if attribute not in data:
-                print(f"Attribute '{attribute}' not found in dataset '{name}'.")
-                continue
+                for name, data in self.pyPlotDatabase:
+                    if attribute not in data:
+                        print(f"Attribute '{attribute}' not found in dataset '{name}'.")
+                        continue
 
-            data_found = True
-            # Extract timestamps and values
-            timestamps = [entry[0] for entry in data[attribute]]
-            values = [entry[1] for entry in data[attribute]]
+                    # Extract timestamps and values
+                    timestamps = [entry[0] / 1000 for entry in data[attribute]]  # Convert to seconds
+                    values = [entry[1] for entry in data[attribute]]
 
-            # Convert UNIX timestamps to human-readable format
-            readable_dates = [datetime.fromtimestamp(ts / 1000).strftime('%Y-%m-%d %H:%M:%S') for ts in timestamps]
+                    # Add series to the plot
+                    dpg.add_line_series(timestamps, values, label=name, parent=y_axis)
 
-            # Add the data to the plot
-            plt.plot(readable_dates, values, marker='o', linestyle='-', label=name)
-
-        if not data_found:
-            print(f"No data found for attribute '{attribute}'.")
-            return
-
-        # Finalize the plot
-        plt.xlabel("Timestamp")
-        plt.ylabel("Value")
-        plt.title(f"{attribute.capitalize()} Over Time")
-        plt.xticks(rotation=45)
-        plt.legend()
-        plt.grid(True)
-        plt.tight_layout()
-        plt.show()
 
 if __name__ == "__main__":
     # Example data
@@ -171,10 +160,18 @@ if __name__ == "__main__":
             [1704074443652, 17697382902.2424]
         ]
     }
+
+    dpg.create_context()
     plotter = DataPlotter()
     # Insert data into the plotter
     plotter.DataPlotter_insertData(data1, "Test1Table")
     plotter.DataPlotter_insertData(data2, "Test2Table")
-    plotter.DataPlotter_insertData(data2, "Test2Table")
+    plotter.DataPlotter_insertData(data2, "Test3Table")
     # Plot all data in the database
     plotter.DataPlotter_plot_by_attribute("total_volumes")
+
+    dpg.create_viewport(title='Dear PyGui Plot Example', width=900, height=700)
+    dpg.setup_dearpygui()
+    dpg.show_viewport()
+    dpg.start_dearpygui()
+    dpg.destroy_context()
