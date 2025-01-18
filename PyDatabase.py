@@ -51,4 +51,4 @@ if __name__ == "__main__":
     #Database._insert_data("Test1", Data)
     #print(Database._extract_row("Test1"))
     #Database._delete_table("Test1")
-    print(Database._query_data_table('Test1', '2', '1'))
+    print(Database._query_data_table('Test1', '2', '##'))
