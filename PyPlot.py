@@ -1,5 +1,7 @@
-import matplotlib.pyplot as plt
+
 from datetime import datetime
+import matplotlib.pyplot as plt
+
 # DataPlotter.py
 # This class is a widget in which, users can add graphs, sorted by an attribute, as well as 
 # perform operations between different graphs. 
