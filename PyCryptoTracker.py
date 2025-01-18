@@ -21,121 +21,202 @@ class PyCT:
                 "x-cg-demo-api-key": self._api_key
             }
 
+    # Ping API
+    def ping_API_server(self):
 
-    def search_coin(self, coin_name):
+        url = "https://api.coingecko.com/api/v3/ping"
+
+        response = requests.get(url, headers=self._headers)
+
+        # Check if the response is successful
+        if response.status_code == 200:
+            return response.json()
+        else:
+            return f"Error: {response.status_code}, {response.text}"
+
+    # Data Getters
+    def search_query(self, search_query, precise = True):
+        # Returns first coin listed
 
         url = "https://api.coingecko.com/api/v3/search"
-        headers = {"accept": "application/json"}
-        params = {"query": coin_name} # Required!
+        params = {"query": search_query} # Required!
 
         # Get data from the API
-        response = requests.get(url, headers=headers, params=params)
+        response = requests.get(url, headers=self._headers, params=params)
         data = response.json()
 
         # Extract specific data about the coin
         coins = data.get('coins', [])
-        if coins:
+
+        if precise:
             coin = coins[0]  # Get the first coin in the list
 
-            # Get Data from Keys
-            labels = ["Coin ID", "Coin Name","Api Symbol", "Symbol", "Market Cap Rank", "Thumb", "Large"]
-            keys = ["id", "name", "api_symbol", "symbol", "market_cap_rank", "thumb", "large"]
-
-            alists = [coin.get(key) for key in keys]
-
-            # Format Data
-            sendData = dict(zip(labels, alists))
-        
-            return sendData
+        # Check if there is data to return
+        if coin: 
+            return coin
         else:
             return response.status_code
         
+    def exchange_data(self, coin_id):
 
-    def search_exchanges(self, coin_name):
-
-        url = "https://api.coingecko.com/api/v3/search"
-        headers = {"accept": "application/json"}
-        params = {"query": coin_name} # Required!
+        url = f"https://api.coingecko.com/api/v3/exchanges/{coin_id}"
 
         # Get data from the API
-        response = requests.get(url, headers=headers, params=params)
+        response = requests.get(url, headers=self._headers)
         data = response.json()
 
-        # Extract specific data about the coin
-        coins = data.get('coins', [])
-        if coins:
-            coin = coins[0]  # Get the first coin in the list
-
-            # Get Data from Keys
-            labels = ["Coin ID", "Coin Name","Market Type", "Thumb", "Large"]
-            keys = ["id", "name", "market_type", "thumb", "large"]
-
-            alists = [coin.get(key) for key in keys]
-
-            # Format Data
-            sendData = dict(zip(labels, alists))
-        
-            return sendData
+        # Check if there is data to return
+        if data: 
+            return data
         else:
             return response.status_code
         
+    def coins_coin_data(self, coin_id, localization = False, tickers = False, market_data = False, community_data = False, developer_data = False, sparkline = False):
+
+        url = f"https://api.coingecko.com/api/v3/coins/{coin_id}"
+
+        params = {
+            "localization": localization,
+            "tickers": tickers, 
+            "market_data": market_data,    
+            "community_data": community_data,
+            "developer_data": developer_data,
+            "sparkline": sparkline  
+            }
+        
+        # Get data from the API
+        response = requests.get(url, headers=self._headers, params=params)
+        data = response.json()
 
 
-    def BTC_to_Currency_ExchRate(self, coin_name):
+        # Check if there is data to return
+        if data: 
+            return data
+        else:
+            return response.status_code
 
-        url = "https://api.coingecko.com/api/v3/exchange_rates"
-        headers = {"accept": "application/json"}
+    def coins_coin_market_page(self, coin_id, precise = True, vs_currency = False, category = False, order = "market_cap_desc", per_page = 50, page = 1, sparkline = False, price_change_percentage = "1h", locale = False, precision = False):
+
+        url = f"https://api.coingecko.com/api/v3/coins/{coin_id}"
+
+        params = {
+            "vs_currency": vs_currency,
+            "category": category,
+            "order": order,
+            "per_page": per_page,
+            "page": page,
+            "sparkline": sparkline,
+            "price_change_percentage": price_change_percentage,
+            "locale": locale,
+            "precision": precision
+            }
+        
+        # Get data from the API
+        response = requests.get(url, self._headers, params=params)
+        data = response.json()
+
+        if precise:
+            market_data = data[0]  # Get the first coin in the list
+        else:
+            market_data = data
+
+        # Check if there is data to return
+        if market_data: 
+            return market_data
+        else:
+            return response.status_code
+
+
+    # CHARTS
+    def coins_chart_historical_timerange(self, coin_id, vs_currency, from_date, to_date, decimal_precision="2"):
+        # Pst 365 days only (demo plan)
+
+        url = f"https://api.coingecko.com/api/v3/coins/{coin_id}/market_chart/range"
+        params = {
+            "vs_currency": vs_currency,
+            "from": from_date,  # Unix timestamp
+            "to": to_date,     # Unix timestamp
+            "precision": decimal_precision    # Optional
+            }
 
         # Get data from the API
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=self._headers, params=params)
         data = response.json()
 
-        # Extract specific data about the coin
-        coins = data.get('coins', [])
-        if coins:
-            coin = coins[0]  # Get the first coin in the list
+        # Check if there is data to return
+        if data: 
+            return data
+        else:
+            return response.status_code
+    
+    def coins_chart_historical_interval(self, coin_id, vs_currency, num_days_ago, interval, decimal_precision="2"):
+        # Past 365 days only (demo plan)
 
-            # Get Data from Keys
-            labels = ["Coin ID", "Coin Name","Market Type", "Thumb", "Large"]
-            keys = ["id", "name", "market_type", "thumb", "large"]
+        url = f"https://api.coingecko.com/api/v3/coins/{coin_id}/market_chart"
+        params = {
+            "vs_currency": vs_currency,
+            "days": num_days_ago,  # Data up to number of days ago
+            "interval": interval,     # data interval
+            "precision": decimal_precision    # Optional
+            }
 
-            alists = [coin.get(key) for key in keys]
+        # Get data from the API
+        response = requests.get(url, headers=self._headers, params=params)
+        data = response.json()
 
-            # Format Data
-            sendData = dict(zip(labels, alists))
+        # Check if there is data to return
+        if data: 
+            return data
+        else:
+            return response.status_code
         
-            return sendData
+    def exchanges_chart_volume(self, coin_id, num_days_ago):
+        # Past 365 days only (demo plan)
+
+        url = f"https://api.coingecko.com/api/v3/exchanges/{coin_id}/volume_chart"
+        params = {
+            "days": num_days_ago,  # Data up to number of days ago
+            }
+
+        # Get data from the API
+        response = requests.get(url, headers=self._headers, params=params)
+        data = response.json()
+
+        # Check if there is data to return
+        if data: 
+            return data
+        else:
+            return response.status_code
+        
+    def coins_chart_OHLC(self, coin_id, vs_currency, num_days_ago, decimal_precision="2"):
+        # Past 365 days only (demo plan)
+
+        url = f"https://api.coingecko.com/api/v3/exchanges/{coin_id}/volume_chart"
+        params = {
+            "vs_currency": vs_currency,
+            "days": num_days_ago,  # Data up to number of days ago
+            "precision": decimal_precision    # Optional
+            }
+
+        # Get data from the API
+        response = requests.get(url, headers=self._headers, params=params)
+        data = response.json()
+
+        # Check if there is data to return
+        if data: 
+            return data
         else:
             return response.status_code
 
-
-    #def get_crypto_data(self, coins, currency="usd", include_market_data=False):
-        
-  
 
 
 
 # Run this file directly to test the api key and CoinGecko server status without the class: {'gecko_says': '(V3) To the Moon!'}
 if __name__ == "__main__":
-    url = "https://api.coingecko.com/api/v3/ping"
-
-    # For professional subscriptions, switch "x-cg-pro-api-key" with "x-cg-demo-api-key"
-    headers = {
-        "accept": "application/json",
-        "x-cg-demo-api-key": "CG-aTnmuupTErMjud8p9vbPqVYS"
-    }
-
-    response = requests.get(url, headers=headers)
-
-    if response.status_code == 200:
-        print(response.json())
-    else:
-        print(f"Error: {response.status_code}, {response.text}")
-
 
     # Testing Area
     testMarket = PyCT("CG-aTnmuupTErMjud8p9vbPqVYS")
-    print(testMarket.search_coin("bitcoin"))
+    print(testMarket.ping_API_server())
 
     
 
